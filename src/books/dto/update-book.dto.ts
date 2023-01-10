@@ -1,5 +1,12 @@
+import { IsNumber, IsString } from 'class-validator'
+
 export class UpdateBookDto {
-  id: number
-  name: string
-  genre: string
+  @IsNumber()
+  readonly id: number
+
+  @IsString()
+  readonly name: string
+
+  @IsString()
+  readonly genre: string
 }
