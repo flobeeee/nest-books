@@ -19,19 +19,23 @@ export class BooksService {
   async findAll(filter: PostBookDto): Promise<Books[]> {
     const searchOption = []
 
-    for (const key in filter) {
-      if (Object.prototype.hasOwnProperty.call(filter, key)) {
-        const obj = {}
-        obj[key] = filter[key]
-        searchOption.push(obj)
-      }
-    }
+    let books = this.booksRepository.find()
 
-    const books = this.booksRepository.find({
-      // or 검색 [ { genre: '음악' }, { name: '바이올린' } ]
-      // and 검색 [ { genre: '음악', name: '바이올린' } ]
-      where: searchOption,
-    })
+    if (filter) {
+      for (const key in filter) {
+        if (Object.prototype.hasOwnProperty.call(filter, key)) {
+          const obj = {}
+          obj[key] = filter[key]
+          searchOption.push(obj)
+        }
+      }
+
+      books = this.booksRepository.find({
+        // or 검색 [ { genre: '음악' }, { name: '바이올린' } ]
+        // and 검색 [ { genre: '음악', name: '바이올린' } ]
+        where: searchOption,
+      })
+    }
 
     return books
   }

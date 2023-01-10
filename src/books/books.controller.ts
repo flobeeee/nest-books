@@ -21,7 +21,8 @@ export class BooksController {
 
   @Get()
   cgetAction(@Query('filter') filter: string | null): Promise<Books[]> {
-    return this.booksService.findAll(JSON.parse(filter))
+    const filters = filter ? JSON.parse(filter) : null
+    return this.booksService.findAll(filters)
   }
 
   @Get(':id')
