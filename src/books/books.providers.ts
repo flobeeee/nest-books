@@ -1,5 +1,5 @@
-import { DataSource } from 'typeorm';
-import { Books } from './books.entity';
+import { DataSource } from 'typeorm'
+import { Books } from './books.entity'
 
 export const booksProviders = [
   {
@@ -7,4 +7,4 @@ export const booksProviders = [
     useFactory: (dataSource: DataSource) => dataSource.getRepository(Books),
     inject: ['DATA_SOURCE'],
   },
-];
+]

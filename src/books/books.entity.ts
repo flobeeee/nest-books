@@ -1,13 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity()
 export class Books {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   @Column({ length: 500 })
-  name: string;
+  name: string
 
   @Column()
-  genre: string;
+  genre: string
 }
