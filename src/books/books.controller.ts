@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Body,
   Controller,
@@ -7,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common'
 import { Books } from './books.entity'
 import { BooksService } from './books.service'
@@ -18,8 +20,8 @@ export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Get()
-  cgetAction(): Promise<Books[]> {
-    return this.booksService.findAll()
+  cgetAction(@Query('filter') filter: string | null): Promise<Books[]> {
+    return this.booksService.findAll(JSON.parse(filter))
   }
 
   @Get(':id')
@@ -28,19 +30,18 @@ export class BooksController {
   }
 
   @Post()
-  postAction(@Body() PostBookDto: PostBookDto): Promise<string> {
-    console.log(PostBookDto)
+  postAction(@Body() PostBookDto: PostBookDto): Promise<Books> {
     return this.booksService.create(PostBookDto)
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() UpdateBookDto: UpdateBookDto) {
+  putAction(@Param('id') id: number, @Body() UpdateBookDto: UpdateBookDto) {
     return this.booksService.update(id, UpdateBookDto)
   }
 
-  @Delete()
+  @Delete(':id')
   @HttpCode(204)
-  deleteAction(): string {
-    return 'This action adds a new cat'
+  deleteAction(@Param('id') id: number) {
+    return this.booksService.delete(id)
   }
 }

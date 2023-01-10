@@ -1,4 +1,9 @@
-import { Injectable, Inject } from '@nestjs/common'
+import {
+  Injectable,
+  Inject,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common'
 import { Repository } from 'typeorm'
 import { Books } from './books.entity'
 import { PostBookDto } from './dto/post-book.dto'
@@ -11,18 +16,46 @@ export class BooksService {
     private booksRepository: Repository<Books>,
   ) {}
 
-  async findAll(): Promise<Books[]> {
-    return this.booksRepository.find()
+  async findAll(filter: PostBookDto): Promise<Books[]> {
+    const searchOption = []
+
+    for (const key in filter) {
+      if (Object.prototype.hasOwnProperty.call(filter, key)) {
+        const obj = {}
+        obj[key] = filter[key]
+        searchOption.push(obj)
+      }
+    }
+
+    const books = this.booksRepository.find({
+      // or 검색 [ { genre: '음악' }, { name: '바이올린' } ]
+      // and 검색 [ { genre: '음악', name: '바이올린' } ]
+      where: searchOption,
+    })
+
+    return books
   }
 
   async findOne(id: number): Promise<Books> {
     return this.booksRepository.findOneBy({ id })
   }
 
-  async create(PostBookDto: PostBookDto): Promise<string> {
-    this.booksRepository.create(PostBookDto)
+  async create(PostBookDto: PostBookDto): Promise<Books> {
+    const book = await this.booksRepository.findOneBy({
+      name: PostBookDto.name,
+    })
 
-    return 'ok'
+    if (book) {
+      throw new BadRequestException('BadRequestException', {
+        cause: new Error(),
+        description: '이미 존재하는 도서명입니다.',
+      })
+    } else {
+      const book = this.booksRepository.create(PostBookDto)
+      await this.booksRepository.save(book)
+
+      return book
+    }
   }
 
   async update(id: number, UpdateBookDto: UpdateBookDto): Promise<Books> {
@@ -35,5 +68,20 @@ export class BooksService {
     await this.booksRepository.save(book)
 
     return book
+  }
+
+  async delete(id: number) {
+    const book = await this.booksRepository.findOneBy({
+      id: id,
+    })
+
+    if (book) {
+      await this.booksRepository.remove(book)
+    } else {
+      throw new NotFoundException('NotFoundException', {
+        cause: new Error(),
+        description: '존재하지 않는 도서입니다.',
+      })
+    }
   }
 }
