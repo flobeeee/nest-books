@@ -15,7 +15,7 @@ import { BooksService } from './books.service'
 import { PostBookDto } from './dto/post-book.dto'
 import { UpdateBookDto } from './dto/update-book.dto'
 
-@Controller('books')
+@Controller('books') // 엔드포인트
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
@@ -41,7 +41,7 @@ export class BooksController {
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(204) // 리턴 코드
   deleteAction(@Param('id') id: number) {
     return this.booksService.delete(id)
   }

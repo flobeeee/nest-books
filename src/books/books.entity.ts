@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
 
+// 모델
 @Entity()
 export class Books {
   @PrimaryGeneratedColumn()
