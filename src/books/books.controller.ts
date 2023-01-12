@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common'
 import { Books } from './books.entity'
 import { BooksService } from './books.service'
-import { PostBookDto } from './dto/post-book.dto'
+import { CreateBookDto } from './dto/create-book.dto'
 import { UpdateBookDto } from './dto/update-book.dto'
 
 @Controller('books') // 엔드포인트
@@ -31,7 +31,7 @@ export class BooksController {
   }
 
   @Post()
-  postAction(@Body() PostBookDto: PostBookDto): Promise<Books> {
+  postAction(@Body() PostBookDto: CreateBookDto): Promise<Books> {
     return this.booksService.create(PostBookDto)
   }
 

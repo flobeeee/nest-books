@@ -1,53 +1,94 @@
-import { Test } from '@nestjs/testing'
+import { Test, TestingModule } from '@nestjs/testing'
+import { CreateBookDto } from './dto/create-book.dto'
 import { BooksController } from './books.controller'
 import { BooksService } from './books.service'
-import { PostBookDto } from './dto/post-book.dto'
 
-describe('CatsController', () => {
+const createBookDto: CreateBookDto = {
+  name: '클린코드',
+  genre: 'IT',
+}
+
+describe('BooksController', () => {
   let booksController: BooksController
+  let booksService: BooksService
 
   beforeEach(async () => {
-    const moduleRef = await Test.createTestingModule({
+    const app: TestingModule = await Test.createTestingModule({
       controllers: [BooksController],
       providers: [
+        BooksService,
         {
           provide: BooksService,
           useValue: {
             create: jest
               .fn()
-              .mockImplementation((book: PostBookDto) =>
+              .mockImplementation((book: CreateBookDto) =>
                 Promise.resolve({ id: '1', ...book }),
               ),
             findAll: jest.fn().mockResolvedValue([
               {
-                name: '나무',
-                genre: '소설',
+                name: '방구석 미술관',
+                genre: '예술',
               },
               {
-                name: '넷플릭스',
-                genre: '비즈니스',
+                name: '슬픔의 방문',
+                genre: '에세이',
               },
             ]),
             findOne: jest.fn().mockImplementation((id: string) =>
               Promise.resolve({
-                name: 'firstName #1',
-                genre: 'lastName #1',
+                name: '클린코드',
+                genre: 'IT',
                 id,
               }),
             ),
-            remove: jest.fn(),
+            delete: jest.fn().mockImplementation(() => Promise.resolve({})),
           },
         },
       ],
     }).compile()
 
-    booksController = moduleRef.get<BooksController>(BooksController)
+    booksController = app.get<BooksController>(BooksController)
+    booksService = app.get<BooksService>(BooksService)
+  })
+
+  it('should be defined', () => {
+    expect(booksController).toBeDefined()
+  })
+
+  describe('create()', () => {
+    it('should create a book', () => {
+      booksController.postAction(createBookDto)
+      expect(booksController.postAction(createBookDto)).resolves.toEqual({
+        id: '1',
+        ...createBookDto,
+      })
+      expect(booksService.create).toHaveBeenCalledWith(createBookDto)
+    })
   })
 
   describe('findAll()', () => {
-    it('should find all users ', async () => {
-      const data = await booksController.cgetAction(null)
-      console.log(data)
+    it('should find all books ', () => {
+      booksController.cgetAction(null)
+      expect(booksService.findAll).toHaveBeenCalled()
+    })
+  })
+
+  describe('findOne()', () => {
+    it('should find a book', () => {
+      expect(booksController.getAction(1)).resolves.toEqual({
+        name: '클린코드',
+        genre: 'IT',
+        id: 1,
+      })
+      expect(booksService.findOne).toHaveBeenCalled()
+    })
+  })
+
+  describe('delete()', () => {
+    it('should remove the user', () => {
+      booksController.deleteAction(2)
+      expect(booksService.delete).toHaveBeenCalled()
     })
   })
 })

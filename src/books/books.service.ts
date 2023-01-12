@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common'
 import { Repository } from 'typeorm'
 import { Books } from './books.entity'
-import { PostBookDto } from './dto/post-book.dto'
+import { CreateBookDto } from './dto/create-book.dto'
 import { UpdateBookDto } from './dto/update-book.dto'
 
 @Injectable()
@@ -16,7 +16,7 @@ export class BooksService {
     private booksRepository: Repository<Books>,
   ) {}
 
-  async findAll(filter: PostBookDto): Promise<Books[]> {
+  async findAll(filter: CreateBookDto): Promise<Books[]> {
     const searchOption = []
 
     let books = this.booksRepository.find()
@@ -44,7 +44,7 @@ export class BooksService {
     return this.booksRepository.findOneBy({ id })
   }
 
-  async create(PostBookDto: PostBookDto): Promise<Books> {
+  async create(PostBookDto: CreateBookDto): Promise<Books> {
     const book = await this.booksRepository.findOneBy({
       name: PostBookDto.name,
     })
@@ -80,7 +80,7 @@ export class BooksService {
     })
 
     if (book) {
-      await this.booksRepository.remove(book)
+      await this.booksRepository.delete(book)
     } else {
       throw new NotFoundException('NotFoundException', {
         cause: new Error(),
