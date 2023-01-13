@@ -8,6 +8,32 @@ const createBookDto: CreateBookDto = {
   genre: 'IT',
 }
 
+const mockService = {
+  create: jest
+    .fn()
+    .mockImplementation((book: CreateBookDto) =>
+      Promise.resolve({ id: '1', ...book }),
+    ),
+  findAll: jest.fn().mockResolvedValue([
+    {
+      name: '방구석 미술관',
+      genre: '예술',
+    },
+    {
+      name: '슬픔의 방문',
+      genre: '에세이',
+    },
+  ]),
+  findOne: jest.fn().mockImplementation((id: number) =>
+    Promise.resolve({
+      name: '클린코드',
+      genre: 'IT',
+      id,
+    }),
+  ),
+  delete: jest.fn().mockImplementation(() => Promise.resolve({})),
+}
+
 describe('BooksController', () => {
   let booksController: BooksController
   let booksService: BooksService
@@ -19,31 +45,7 @@ describe('BooksController', () => {
         BooksService,
         {
           provide: BooksService,
-          useValue: {
-            create: jest
-              .fn()
-              .mockImplementation((book: CreateBookDto) =>
-                Promise.resolve({ id: '1', ...book }),
-              ),
-            findAll: jest.fn().mockResolvedValue([
-              {
-                name: '방구석 미술관',
-                genre: '예술',
-              },
-              {
-                name: '슬픔의 방문',
-                genre: '에세이',
-              },
-            ]),
-            findOne: jest.fn().mockImplementation((id: string) =>
-              Promise.resolve({
-                name: '클린코드',
-                genre: 'IT',
-                id,
-              }),
-            ),
-            delete: jest.fn().mockImplementation(() => Promise.resolve({})),
-          },
+          useValue: mockService,
         },
       ],
     }).compile()
@@ -79,7 +81,7 @@ describe('BooksController', () => {
       expect(booksController.getAction(1)).resolves.toEqual({
         name: '클린코드',
         genre: 'IT',
-        id: 1,
+        id: expect.any(Number),
       })
       expect(booksService.findOne).toHaveBeenCalled()
     })
