@@ -38,7 +38,7 @@ describe('BooksController', () => {
   let booksController: BooksController
   let booksService: BooksService
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [BooksController],
       providers: [
