@@ -67,4 +67,11 @@ export class BooksController {
   deleteAction(@Param('id') id: number) {
     return this.booksService.delete(id)
   }
+
+  @Delete()
+  deleteAllAction() {
+    if (process.env.NODE_ENV === 'test') {
+      return this.booksService.truncate()
+    }
+  }
 }

@@ -106,4 +106,8 @@ export class BooksService {
       })
     }
   }
+
+  async truncate() {
+    await this.booksRepository.clear()
+  }
 }
