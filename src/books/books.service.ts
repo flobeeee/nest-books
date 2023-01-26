@@ -107,7 +107,34 @@ export class BooksService {
     }
   }
 
-  async truncate() {
+  async resetTable() {
     await this.booksRepository.clear()
+
+    await this.booksRepository
+      .createQueryBuilder()
+      .insert()
+      .values([
+        {
+          name: '클린 코드',
+          genre: 'IT',
+        },
+        {
+          name: '개미',
+          genre: '소설',
+        },
+        {
+          name: '더 해빙',
+          genre: '자기개발',
+        },
+        {
+          name: '죽고싶지만 떡볶이는 먹고 싶어',
+          genre: '에세이',
+        },
+        {
+          name: '보건교사 안은영',
+          genre: '소설',
+        },
+      ])
+      .execute()
   }
 }

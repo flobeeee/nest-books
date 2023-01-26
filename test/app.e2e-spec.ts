@@ -15,7 +15,7 @@ describe('BooksController (e2e)', () => {
   // ! test DB에서만 테스트 실행 & 데이터 테스트 할 DB 필수 변경
   if (process.env.NODE_ENV === 'test') {
     describe('/books (TRUNCATE)', () => {
-      it('truncate Books table', () => {
+      it('truncate Book table', () => {
         return request(authUrl).delete('/books').expect(HttpStatus.OK)
       })
     })

@@ -71,7 +71,7 @@ export class BooksController {
   @Delete()
   deleteAllAction() {
     if (process.env.NODE_ENV === 'test') {
-      return this.booksService.truncate()
+      return this.booksService.resetTable()
     }
   }
 }
