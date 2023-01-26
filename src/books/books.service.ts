@@ -63,9 +63,27 @@ export class BooksService {
   }
 
   async update(id: number, UpdateBookDto: UpdateBookDto): Promise<Books> {
+    const sameNameBook = await this.booksRepository.findOneBy({
+      name: UpdateBookDto.name,
+    })
+
+    if (sameNameBook) {
+      throw new BadRequestException('BadRequestException', {
+        cause: new Error(),
+        description: '이미 존재하는 도서명입니다.',
+      })
+    }
+
     const book = await this.booksRepository.findOneBy({
       id: id,
     })
+
+    if (!book) {
+      throw new NotFoundException('NotFoundException', {
+        cause: new Error(),
+        description: '존재하지 않는 도서입니다.',
+      })
+    }
 
     book.name = UpdateBookDto.name
     book.genre = UpdateBookDto.genre
