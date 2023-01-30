@@ -3,6 +3,7 @@ import { CreateBookDto } from './dto/create-book.dto'
 import { BooksController } from './books.controller'
 import { BooksService } from './books.service'
 
+// TDD 기반 개발할 때
 const createBookDto: CreateBookDto = {
   name: '클린코드',
   genre: 'IT',

@@ -8,5 +8,6 @@ import { BooksService } from './books.service'
   imports: [DatabaseModule],
   controllers: [BooksController],
   providers: [...booksProviders, BooksService],
+  exports: [BooksService, ...booksProviders],
 })
 export class BooksModule {}

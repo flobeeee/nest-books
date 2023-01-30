@@ -3,6 +3,7 @@ import { CreateBookDto } from 'src/books/dto/create-book.dto'
 import { UpdateBookDto } from 'src/books/dto/update-book.dto'
 import * as request from 'supertest'
 
+// 서버를 띄우고 컨트롤러를 테스트한다는 개념
 describe('BooksController (e2e)', () => {
   const authUrl = `http://localhost:3000`
   let bookId: number
@@ -12,6 +13,7 @@ describe('BooksController (e2e)', () => {
     genre: '자기개발',
   }
 
+  // DI 주입하는 방식 찾아보기(생성자 주입 등)
   // ! test DB에서만 테스트 실행 & 데이터 테스트 할 DB 필수 변경
   if (process.env.NODE_ENV === 'test') {
     describe('/books (TRUNCATE)', () => {
